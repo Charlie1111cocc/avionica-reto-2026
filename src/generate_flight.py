@@ -9,16 +9,18 @@ import random
 # Ruido gaussiano sigma= 0.5m
 # Variables iniciales
 
+
 tiempo = 0
 altitud = 0 #apogeo en 480 m
 velocidad = 0
 aceleracion = 0 
 temperatura = 20 #temperatura inicial (Valor arbitrario)
 
-time_ms = ["Tiempo"]
-altitude_m = ["Altitud"]
-accel_z_ms2 = ["Aceleración Z"]
-temp_c = ["Temperatura"]
+time_ms = []
+altitude_m = []
+accel_z_ms2 = []
+temp_c = []
+
 
 #Fase 1 : En rampa (2s) altitud cte
     #Aqui altitud y temperatura son constantes, velocidad y aceleracion son 0
@@ -37,7 +39,14 @@ for i in range (20):
     accel_z_ms2.append(accel_z_ruido)
     temp_ruido = temp + random.gauss(0.0, 0.5)
     temp_c.append(temp_ruido)
-    
+
+# Lineas corruptas
+
+altitude_m.append("ERR")
+time_ms.append("ERR")
+accel_z_ms2.append("ERR")
+temp_c.append("ERR")
+
 
 #fase 2 propulsion durannte 1.5 segundos y una aceleracion de 60m/s^2
 for i in range (15): # 1.5 segundos a 10 Hz
@@ -57,10 +66,16 @@ for i in range (15): # 1.5 segundos a 10 Hz
     temp_ruido = temp + random.gauss(0.0, 0.5)
     temp_c.append(temp_ruido)
 
+altitude_m.append("ERR")
+time_ms.append("ERR")
+accel_z_ms2.append("ERR")
+temp_c.append("ERR")
+
+
 #fase 3 Vuelo balistico, sin propulsion hasta 480m
 #Primero calculamos el tiempo que tarda en llegar a los 480m
 # t = (v - v0) / -a
-#t = (0 - velocidad) / -9.81  # tiempo hasta que la velocidad sea 0
+
 #print(f"Tiempo hasta que la velocidad sea 0: {t} segundos")
 #Lo redondeamos a 9s
 
@@ -80,7 +95,11 @@ for i in range (90): # 9 segundos a 10 Hz
     accel_z_ms2.append(accel_z_ruido)
     temp_ruido = temp + random.gauss(0.0, 0.5)
     temp_c.append(temp_ruido)
-  
+
+altitude_m.append("ERR")
+time_ms.append("ERR")
+accel_z_ms2.append("ERR")
+temp_c.append("ERR")
 
 #Suponiendo que el paracaidas se abre a 480 m. Inicia fase 4, descenso con paracaidas, aceleracion de -5 m/s^2 hasta llegar a 0 m
 #Calculamos el tiempo que tarda en llegar a 0 m
@@ -126,15 +145,14 @@ print(time_ms)  # Imprime la lista de tiempos para verificar
 print(accel_z_ms2)  # Imprime la lista de aceleraciones para verificar
 print(temp_c)  # Imprime la lista de temperaturas para verificar  
 
-
 # Creamos el archivo CSV 
 
+encabezados = ["Tiempo", "Altitud", "Aceleracion", "Temperatura",]
+filas = zip(time_ms, altitude_m, accel_z_ms2, temp_c,)
 
-
-encabezados = ["Tiempo", "Altitud", "Aceleración", "Temperatura", "Activo"]
-filas = zip(time_ms, altitude_m, accel_z_ms2, temp_c, [True]*len(time_ms))
-
-with open("salida.csv", mode="w", newline="", encoding="utf-8") as archivo:
+with open("flight_log.csv", mode="w", newline="", encoding="utf-8") as archivo:
   escritor = csv.writer(archivo)
   escritor.writerow(encabezados)
   escritor.writerows(filas)
+
+#Fin de la parte A
